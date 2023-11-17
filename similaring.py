@@ -43,7 +43,7 @@ def check_if_searched_recently(url, recency_check=7):
     return False
 
 
-def find_similar_pages(url, num_results=10, published_date_cutoff=None):
+def find_similar_pages(url, num_results=10, start_published_date=None):
     # Skip the search if there is a log entry for the current date for the URL
     recency_check = 7
     if check_if_searched_recently(url, recency_check=recency_check):
@@ -57,8 +57,8 @@ def find_similar_pages(url, num_results=10, published_date_cutoff=None):
         "exclude_source_domain": True,
         "num_results": num_results,  # Set the number of results
     }
-    if published_date_cutoff:
-        options["end_published_date"] = published_date_cutoff
+    if start_published_date:
+        options["start_published_date"] = start_published_date
 
     # Find similar pages excluding the same domain
     print(f"Searching for similar pages...: {url}")
@@ -140,7 +140,7 @@ def check_for_new_pages_in_log():
 
 
 def main():
-    published_date_cutoff = (
+    start_published_date = (
         datetime.datetime.now() - datetime.timedelta(days=30)
     ).strftime(
         "%Y-%m-%d"
@@ -150,7 +150,7 @@ def main():
     for url_to_search in URLS_TO_SEARCH:
         # Fetch similar pages
         similar_pages = find_similar_pages(
-            url_to_search, num_results, published_date_cutoff
+            url_to_search, num_results, start_published_date
         )
         # If skipped message is returned, print it and continue
         try:
